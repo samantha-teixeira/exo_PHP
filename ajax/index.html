@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <p onclick='ajaxGetFile("html/caen.html","caen")'>Ville de Caen</p>
+    <div id="caen"></div>
+
+    <p onclick='ajaxGetFile("html/alencon.html","alencon")'>Ville d'Alençon</p>
+    <div id="alencon"></div>
+
+    <p onclick='ajaxGetFile("html/cherbourg.html","cherbourg")'>Ville de Cherbourg</p>
+    <div id="cherbourg"></div>
+
+    <p onclick='ajaxGetVilles()' id="villes">Chercher liste villes</p>
+
+    <p onclick='ajaxGetFiche()' id="fiche">Voir la fiche de Caen</p>
+
+    <p onclick='ajaxGetContacts()' id="contact">Afficher les contacts</p>
+
+
+<script>
+    // function ajaxGetFile(nomFichier,destination) {
+    //     var xhr=new XMLHttpRequest; // requette AJAX
+    //     xhr.open("GET",nomFichier); // recupere le repertoire caen.txt
+    //     xhr.send(); // envoi
+    //     xhr.onload=function() { //lorsque la réponse arrive, execute la fonction
+    //         let reponse=xhr.response;
+    //         document.getElementById(destination).innerText=reponse;
+    //     }
+    // }
+
+    function ajaxGetFile(nomFichier,destination) {
+        var xhr=new XMLHttpRequest; // requette AJAX
+        xhr.open("GET",nomFichier); // recupere le repertoire caen.txt
+        xhr.send(); // envoi
+        xhr.onload=function() { //lorsque la réponse arrive, execute la fonction
+            let reponse=xhr.response;
+            document.getElementById(destination).innerHTML=reponse;
+        }
+    }
+
+    function ajaxGetVilles() {
+        var xhr=new XMLHttpRequest; // requette AJAX
+        xhr.open("GET","liste_villes.csv"); // recupere le repertoire caen.txt
+        xhr.send(); 
+        var villes=[]; 
+        xhr.onload=function() { //lorsque la réponse arrive, execute la fonction
+            let reponse=xhr.response;
+            villes=reponse.split(",");
+            afficheVilles(villes);
+        } 
+    }
+
+    function afficheVilles(villes) {
+        var str="<ul>";
+        for (var i=0; i<villes.length ;i++) {
+            str+= '<li>'+ villes[i]+'</li>';
+        }
+        str+= '</ul>';
+        document.getElementById("villes").innerHTML=str;
+    }
+
+    function ajaxGetFiche() {
+        var xhr=new XMLHttpRequest; // requette AJAX
+        xhr.open("GET","json/fiche_caen.json"); // recupere le repertoire caen.txt
+        xhr.send(); 
+        xhr.onload=function() { //lorsque la réponse arrive, execute la fonction
+            let reponse=xhr.response;
+            alert (reponse);
+            afficheFiche(JSON.parse(reponse));
+        } 
+    }
+
+    function afficheFiche(fiche) {
+        str="<ul>";
+        str+= '<li>'+ "nom:"+fiche.nom +'</li>';
+        str+= '<li>'+ "CP:"+fiche.cp +'</li>';
+        str+= '<li>'+ "habitants:"+fiche.habitants +'</li>';
+        str+= '<li>'+ "superficie:"+fiche.superficie +'</li>';
+        str+= '</ul>';
+        document.getElementById("fiche").innerHTML=str;
+    }
+
+    function json2str(json) {
+        return '<tr><td>'+json.nom+'</td><td>'+json.prenom+'</td><td>'+json.email+'</td></tr>';
+    }
+
+    function ajaxGetContacts() {
+        var xhr=new XMLHttpRequest; // requette AJAX
+        xhr.open("GET","json/contacts.json"); // recupere le repertoire caen.txt
+        xhr.send(); 
+        xhr.onload=function() { //lorsque la réponse arrive, execute la fonction
+            let reponse=xhr.response;
+            afficheContacts(JSON.parse(reponse));
+        } 
+    }
+
+    function afficheContacts(tab) {
+    var str='<table>';
+    for (var i=0; i<tab.length;i++) {
+        str+= json2str(tab[i]);
+    }
+    str+='</table>';
+    document.getElementById("contact").innerHTML=str;
+    }   
+    
+ 
+</script>
+
+</body>
+</html>
